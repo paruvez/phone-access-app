@@ -6,6 +6,9 @@ import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import { Client, GatewayIntentBits, EmbedBuilder, TextChannel, AttachmentBuilder } from 'discord.js';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import ws from 'ws';
+// Use the default export which is the WebSocket class
+const WebSocket = ws.default || ws;
 import {
   Note,
   FileRecord,
