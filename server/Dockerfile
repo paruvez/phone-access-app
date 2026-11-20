@@ -12,7 +12,6 @@ RUN npm install --ignore-scripts
 # Copy source code
 COPY src ./src
 COPY tsconfig.json ./
-COPY shared ./shared
 
 # Build server
 RUN npm run build
