@@ -55,6 +55,12 @@ jobs:
           cd mobile
           npm ci --legacy-peer-deps
 
+      - name: Debug - Check Expo Version
+        run: |
+          cd mobile
+          npx expo --version
+          npx expo-doctor
+
       - name: Prebuild Expo
         run: |
           cd mobile
