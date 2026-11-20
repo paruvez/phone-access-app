@@ -6,6 +6,7 @@ import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import { Client, GatewayIntentBits, EmbedBuilder, TextChannel, AttachmentBuilder } from 'discord.js';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import ws from 'ws';
 import {
   Note,
   FileRecord,
@@ -51,14 +52,14 @@ if (missing.length > 0) {
 }
 
 // ============================================
-// SUPABASE CLIENT (Realtime disabled for Node.js 20 compatibility)
+// SUPABASE CLIENT (Using ws transport for Node.js 22)
 // ============================================
 
 const supabase: SupabaseClient = createClient(config.supabaseUrl, config.supabaseAnonKey, {
-  realtime: { enabled: false }
+  realtime: { transport: ws }
 });
 const supabaseAdmin: SupabaseClient = createClient(config.supabaseUrl, config.supabaseServiceKey || config.supabaseAnonKey, {
-  realtime: { enabled: false }
+  realtime: { transport: ws }
 });
 
 // ============================================
