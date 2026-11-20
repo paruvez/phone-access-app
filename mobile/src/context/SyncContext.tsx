@@ -20,6 +20,7 @@ interface SyncContextType {
     type: FileRecord['type'];
     metadata?: Record<string, unknown>;
   }) => Promise<FileRecord | null>;
+  deleteFile: (id: string) => Promise<boolean>;
 
   // SMS
   smsMessages: SMSMessage[];
@@ -116,6 +117,20 @@ export function SyncProvider({ children }: { children: React.ReactNode }) {
     }
   }, [supabase]);
 
+  // Delete file
+  const deleteFile = useCallback(async (id: string) => {
+    try {
+      const { error } = await supabase.from('files').delete().eq('id', id);
+      if (error) throw error;
+
+      setFiles(prev => prev.filter(f => f.id !== id));
+      return true;
+    } catch (error) {
+      console.error('Delete file error:', error);
+      return false;
+    }
+  }, [supabase]);
+
   const fetchFiles = useCallback(async (type?: string) => {
     try {
       let query = supabase.from('files').select('*').order('created_at', { ascending: false }).limit(50);
@@ -136,20 +151,25 @@ export function SyncProvider({ children }: { children: React.ReactNode }) {
     metadata?: Record<string, unknown>;
   }) => {
     try {
-      // Read file as base64
-      const { FileSystem } = await import('expo-file-system');
-      const base64 = await FileSystem.readAsStringAsync(file.uri, { encoding: FileSystem.EncodingType.Base64 });
+      const formData = new FormData();
+      formData.append('filename', file.filename);
+      formData.append('type', file.type);
+      formData.append('user_id', user?.id || 'anonymous');
+      formData.append('metadata', JSON.stringify(file.metadata || {}));
+
+      // Append the file
+      formData.append('file', {
+        uri: file.uri,
+        name: file.filename,
+        type: file.metadata?.mimeType || 'application/octet-stream',
+      } as any);
 
       const response = await fetch(`${API_BASE_URL}/api/files`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          filename: file.filename,
-          type: file.type,
-          base64,
-          metadata: file.metadata,
-          user_id: user?.id || 'anonymous',
-        }),
+        body: formData,
+        headers: {
+          // Don't set Content-Type - let fetch set it with boundary
+        },
       });
 
       if (!response.ok) throw new Error('Upload failed');
@@ -291,6 +311,7 @@ export function SyncProvider({ children }: { children: React.ReactNode }) {
         files,
         fetchFiles,
         uploadFile,
+        deleteFile,
         smsMessages,
         fetchSms,
         sendSms,

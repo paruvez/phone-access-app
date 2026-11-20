@@ -59,20 +59,11 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       'RECEIVE_BOOT_COMPLETED',
     ],
   },
-  web: {
-    favicon: './assets/favicon.png',
-  },
-  plugins: [
+    plugins: [
     'expo-camera',
     'expo-media-library',
     'expo-av',
     'expo-notifications',
-    [
-      'expo-permissions',
-      {
-        permissions: ['CAMERA', 'RECORD_AUDIO', 'READ_EXTERNAL_STORAGE', 'WRITE_EXTERNAL_STORAGE'],
-      },
-    ],
     [
       'expo-build-properties',
       {

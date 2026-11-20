@@ -17,7 +17,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 export function NoteEditorScreen() {
   const navigation = useNavigation();
   const route = useRoute();
-  const { createNote, updateNote } = useSync();
+  const { createNote, updateNote, deleteNote } = useSync();
 
   const { mode, note } = route.params || { mode: 'create', note: null };
   const isEditing = mode === 'edit';
@@ -63,7 +63,7 @@ export function NoteEditorScreen() {
         text: 'Delete',
         style: 'destructive',
         onPress: async () => {
-          // Note: deleteNote is not in SyncContext, would need to add it
+          await deleteNote(note!.id);
           navigation.goBack();
         },
       },

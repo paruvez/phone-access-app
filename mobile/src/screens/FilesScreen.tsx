@@ -19,7 +19,7 @@ import { FileRecord } from '@phone-access/shared';
 import { formatBytes } from '@phone-access/shared';
 
 export function FilesScreen({ navigation }: any) {
-  const { files, fetchFiles, uploadFile, syncing } = useSync();
+  const { files, fetchFiles, uploadFile, deleteFile, syncing } = useSync();
   const { hasAllPermissions, requestPermission } = usePermissions();
 
   const [selectedType, setSelectedType] = useState<FileRecord['type'] | 'all'>('all');
@@ -93,7 +93,13 @@ export function FilesScreen({ navigation }: any) {
   const handleLongPress = (file: FileRecord) => {
     Alert.alert('Delete File', `Delete ${file.filename}?`, [
       { text: 'Cancel', style: 'cancel' },
-      { text: 'Delete', style: 'destructive', onPress: () => {} },
+      {
+        text: 'Delete',
+        style: 'destructive',
+        onPress: async () => {
+          await deleteFile(file.id);
+        }
+      },
     ]);
   };
 
