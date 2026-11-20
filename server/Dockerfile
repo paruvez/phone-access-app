@@ -4,14 +4,15 @@ FROM node:20-alpine AS builder
 WORKDIR /app
 
 # Copy package files
-COPY server/package*.json ./
+COPY package*.json ./
 
 # Install dependencies
 RUN npm install --ignore-scripts
 
 # Copy source code
-COPY server/src ./src
-COPY server/tsconfig.json ./
+COPY src ./src
+COPY tsconfig.json ./
+COPY shared ./shared
 
 # Build server
 RUN npm run build
@@ -22,7 +23,7 @@ FROM node:20-alpine AS runner
 WORKDIR /app
 
 # Copy package files
-COPY server/package*.json ./
+COPY package*.json ./
 
 # Install production dependencies only
 RUN npm install --omit=dev --ignore-scripts
