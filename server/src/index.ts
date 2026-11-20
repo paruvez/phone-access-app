@@ -55,12 +55,21 @@ if (missing.length > 0) {
 // SUPABASE CLIENT
 // ============================================
 
-const supabase: SupabaseClient = createClient(config.supabaseUrl, config.supabaseAnonKey, {
-  realtime: { transport: ws }
-});
-const supabaseAdmin: SupabaseClient = createClient(config.supabaseUrl, config.supabaseServiceKey || config.supabaseAnonKey, {
-  realtime: { transport: ws }
-});
+let supabase: SupabaseClient;
+let supabaseAdmin: SupabaseClient;
+
+function initSupabaseClients(): void {
+  supabase = createClient(config.supabaseUrl, config.supabaseAnonKey, {
+    realtime: { transport: ws }
+  });
+  supabaseAdmin = createClient(config.supabaseUrl, config.supabaseServiceKey || config.supabaseAnonKey, {
+    realtime: { transport: ws }
+  });
+  console.log('✅ Supabase clients initialized with ws transport');
+}
+
+// Initialize clients
+initSupabaseClients();
 
 // ============================================
 // DISCORD CLIENT
