@@ -52,14 +52,41 @@ if (missing.length > 0) {
 }
 
 // ============================================
-// SUPABASE CLIENT
+// SUPABASE CLIENT (Lazy initialization to allow ws import to resolve)
 // ============================================
 
-const supabase: SupabaseClient = createClient(config.supabaseUrl, config.supabaseAnonKey, {
-  realtime: { transport: ws }
+let _supabase: SupabaseClient | null = null;
+let _supabaseAdmin: SupabaseClient | null = null;
+
+function getSupabase(): SupabaseClient {
+  if (!_supabase) {
+    _supabase = createClient(config.supabaseUrl, config.supabaseAnonKey, {
+      realtime: { transport: ws }
+    });
+  }
+  return _supabase;
+}
+
+function getSupabaseAdmin(): SupabaseClient {
+  if (!_supabaseAdmin) {
+    _supabaseAdmin = createClient(config.supabaseUrl, config.supabaseServiceKey || config.supabaseAnonKey, {
+      realtime: { transport: ws }
+    });
+  }
+  return _supabaseAdmin;
+}
+
+// Backwards compatibility - use getters
+const supabase = new Proxy({} as SupabaseClient, {
+  get(target, prop) {
+    return getSupabase()[prop as keyof SupabaseClient];
+  }
 });
-const supabaseAdmin: SupabaseClient = createClient(config.supabaseUrl, config.supabaseServiceKey || config.supabaseAnonKey, {
-  realtime: { transport: ws }
+
+const supabaseAdmin = new Proxy({} as SupabaseClient, {
+  get(target, prop) {
+    return getSupabaseAdmin()[prop as keyof SupabaseClient];
+  }
 });
 
 // ============================================
