@@ -54,8 +54,12 @@ if (missing.length > 0) {
 // SUPABASE CLIENT
 // ============================================
 
-const supabase: SupabaseClient = createClient(config.supabaseUrl, config.supabaseAnonKey);
-const supabaseAdmin: SupabaseClient = createClient(config.supabaseUrl, config.supabaseServiceKey || config.supabaseAnonKey);
+const supabase: SupabaseClient = createClient(config.supabaseUrl, config.supabaseAnonKey, {
+  realtime: { enabled: false }
+});
+const supabaseAdmin: SupabaseClient = createClient(config.supabaseUrl, config.supabaseServiceKey || config.supabaseAnonKey, {
+  realtime: { enabled: false }
+});
 
 // ============================================
 // DISCORD CLIENT
