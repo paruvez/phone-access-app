@@ -1,0 +1,24 @@
+{
+  "name": "phone-access-app",
+  "version": "1.0.0",
+  "description": "Full phone access app with React Native, Supabase, and Discord bot",
+  "private": true,
+  "workspaces": [
+    "server",
+    "worker",
+    "mobile",
+    "shared"
+  ],
+  "scripts": {
+    "install:all": "npm install --workspaces",
+    "dev:server": "npm run dev --workspace=server",
+    "dev:worker": "npm run dev --workspace=worker",
+    "dev:mobile": "npm run start --workspace=mobile",
+    "build:mobile": "npm run build --workspace=mobile",
+    "deploy:server": "npm run deploy --workspace=server"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "typescript": "^5.3.0"
+  }
+}
