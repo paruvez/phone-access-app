@@ -15,7 +15,7 @@ import {
   REQUIRED_PERMISSIONS,
   generateId,
   formatBytes,
-} from '@phone-access/shared';
+} from './shared';
 
 // ============================================
 // CONFIGURATION
