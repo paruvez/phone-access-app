@@ -17,7 +17,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'npm'
           cache-dependency-path: mobile/package-lock.json
 
@@ -43,10 +43,25 @@ jobs:
           key: gradle-${{ runner.os }}-${{ hashFiles('mobile/android/gradle/wrapper/gradle-wrapper.properties') }}
           restore-keys: gradle-${{ runner.os }}-
 
+      - name: Cache npm
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: npm-${{ runner.os }}-${{ hashFiles('mobile/package-lock.json') }}
+          restore-keys: npm-${{ runner.os }}-
+
       - name: Install dependencies
         run: |
           cd mobile
           npm ci --legacy-peer-deps
+
+      - name: Prebuild Expo
+        run: |
+          cd mobile
+          npx expo prebuild --platform android --clean
+
+      - name: Increase Gradle Memory
+        run: echo "org.gradle.jvmargs=-Xmx4g -XX:MaxMetaspaceSize=1g" >> mobile/android/gradle.properties
 
       - name: Build Release APK
         run: |
