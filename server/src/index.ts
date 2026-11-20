@@ -151,17 +151,17 @@ client.on(Events.Warn, (warning) => {
   console.warn('⚠️ Discord client warning:', warning);
 });
 
-client.on(Events.Disconnect, async (event) => {
+client.on('disconnect' as any, async (event: any) => {
   console.log(`🔌 Discord disconnected: ${event.code} - ${event.reason}`);
   botStatus.connected = false;
   scheduleReconnect();
 });
 
-client.on(Events.Reconnecting, () => {
+client.on('reconnecting' as any, () => {
   console.log('🔄 Discord reconnecting...');
 });
 
-client.on(Events.Resume, (replayed) => {
+client.on('resume' as any, (replayed: number) => {
   console.log(`🔄 Discord session resumed, replayed ${replayed} events`);
   botStatus.connected = true;
   botStatus.lastReconnect = new Date();
