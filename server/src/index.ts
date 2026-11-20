@@ -4,7 +4,7 @@
 import 'dotenv/config';
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
-import { Client, GatewayIntentBits, Events, EmbedBuilder, TextChannel, AttachmentBuilder } from 'discord.js';
+import { Client, GatewayIntentBits, EmbedBuilder, TextChannel, AttachmentBuilder } from 'discord.js';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import {
   Note,
@@ -106,7 +106,7 @@ app.get('/health', (_req: Request, res: Response) => {
 // DISCORD EVENT HANDLERS
 // ============================================
 
-client.once(Events.ClientReady, async (readyClient) => {
+client.once('ready', async (readyClient) => {
   console.log(`✅ Discord bot ready: ${readyClient.user.tag}`);
 
   botStatus = {
@@ -128,7 +128,7 @@ client.once(Events.ClientReady, async (readyClient) => {
   await sendStartupNotification(readyClient);
 });
 
-client.on(Events.MessageCreate, async (message) => {
+client.on('messageCreate', async (message) => {
   if (message.author.bot) return;
 
   // Handle commands prefixed with !
@@ -137,31 +137,31 @@ client.on(Events.MessageCreate, async (message) => {
   }
 });
 
-client.on(Events.InteractionCreate, async (interaction) => {
+client.on('interactionCreate', async (interaction) => {
   if (!interaction.isChatInputCommand()) return;
 
   await handleSlashCommand(interaction);
 });
 
-client.on(Events.Error, (error) => {
+client.on('error', (error) => {
   console.error('❌ Discord client error:', error);
 });
 
-client.on(Events.Warn, (warning) => {
+client.on('warn', (warning) => {
   console.warn('⚠️ Discord client warning:', warning);
 });
 
-client.on('disconnect' as any, async (event: any) => {
+client.on('disconnect', async (event: any) => {
   console.log(`🔌 Discord disconnected: ${event.code} - ${event.reason}`);
   botStatus.connected = false;
   scheduleReconnect();
 });
 
-client.on('reconnecting' as any, () => {
+client.on('reconnecting', () => {
   console.log('🔄 Discord reconnecting...');
 });
 
-client.on('resume' as any, (replayed: number) => {
+client.on('resume', (replayed: number) => {
   console.log(`🔄 Discord session resumed, replayed ${replayed} events`);
   botStatus.connected = true;
   botStatus.lastReconnect = new Date();
