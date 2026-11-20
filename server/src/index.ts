@@ -6,7 +6,6 @@ import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import { Client, GatewayIntentBits, EmbedBuilder, TextChannel, AttachmentBuilder } from 'discord.js';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import WebSocket from 'ws';
 import {
   Note,
   FileRecord,
@@ -52,14 +51,14 @@ if (missing.length > 0) {
 }
 
 // ============================================
-// SUPABASE CLIENT (Using ws transport for Node.js 22)
+// SUPABASE CLIENT (Realtime disabled for compatibility)
 // ============================================
 
 const supabase: SupabaseClient = createClient(config.supabaseUrl, config.supabaseAnonKey, {
-  realtime: { transport: WebSocket }
+  realtime: { enabled: false }
 });
 const supabaseAdmin: SupabaseClient = createClient(config.supabaseUrl, config.supabaseServiceKey || config.supabaseAnonKey, {
-  realtime: { transport: WebSocket }
+  realtime: { enabled: false }
 });
 
 // ============================================
